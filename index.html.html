@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///Users/h.kawakita/Downloads/yogibo-sns-generator_14.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yogibo SNS Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --yogibo-red: #E8362A;
+    --yogibo-dark: #1A1A1A;
+    --yogibo-gray: #F5F4F2;
+    --yogibo-mid: #888;
+    --yogibo-border: #E0DED9;
+    --x-color: #000;
+    --fb-color: #1877F2;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #FAFAF8;
+    color: var(--yogibo-dark);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--yogibo-dark);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+
+  .logo span {
+    color: var(--yogibo-red);
+  }
+
+  .badge {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--yogibo-red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--yogibo-dark);
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--yogibo-border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  /* カテゴリ選択 */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .cat-btn {
+    border: 1.5px solid var(--yogibo-border);
+    background: white;
+    border-radius: 10px;
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .cat-btn .emoji {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .cat-btn:hover {
+    border-color: var(--yogibo-red);
+    color: var(--yogibo-red);
+    background: #FFF5F5;
+  }
+
+  .cat-btn.selected {
+    border-color: var(--yogibo-red);
+    background: var(--yogibo-red);
+    color: white;
+  }
+
+  /* テキストエリア */
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--yogibo-border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--yogibo-dark);
+    resize: vertical;
+    min-height: 180px;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #FAFAF8;
+  }
+
+  textarea:focus {
+    border-color: var(--yogibo-red);
+    background: white;
+  }
+
+  textarea::placeholder {
+    color: #BBB;
+  }
+
+  /* URL入力 */
+  .url-input-wrap {
+    position: relative;
+    margin-top: 12px;
+  }
+
+  .url-input-wrap input {
+    width: 100%;
+    border: 1.5px solid var(--yogibo-border);
+    border-radius: 10px;
+    padding: 13px 16px 13px 40px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    color: var(--yogibo-dark);
+    outline: none;
+    background: #FAFAF8;
+    transition: border-color 0.15s;
+  }
+
+  .url-input-wrap input:focus {
+    border-color: var(--yogibo-red);
+    background: white;
+  }
+
+  .url-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #AAA;
+    font-size: 16px;
+  }
+
+  .input-hint {
+    font-size: 12px;
+    color: var(--yogibo-mid);
+    margin-top: 8px;
+  }
+
+  /* 生成ボタン */
+  .generate-btn {
+    width: 100%;
+    background: var(--yogibo-red);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .generate-btn:hover:not(:disabled) {
+    background: #C8291F;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(232,54,42,0.3);
+  }
+
+  .generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* 結果エリア */
+  .result-section {
+    display: none;
+  }
+
+  .result-section.visible {
+    display: block;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card {
+    background: white;
+    border: 1px solid var(--yogibo-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--yogibo-border);
+  }
+
+  .platform-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .platform-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-x { background: var(--x-color); }
+  .dot-fb { background: var(--fb-color); }
+
+  .copy-btn {
+    background: var(--yogibo-gray);
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: #555;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .copy-btn:hover {
+    background: var(--yogibo-dark);
+    color: white;
+  }
+
+  .copy-btn.copied {
+    background: #22C55E;
+    color: white;
+  }
+
+  .result-body {
+    padding: 20px;
+  }
+
+  .result-text {
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    color: var(--yogibo-dark);
+    min-height: 60px;
+  }
+
+  /* ローディング */
+  .loading-wrap {
+    display: none;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .loading-wrap.visible {
+    display: block;
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--yogibo-border);
+    border-top-color: var(--yogibo-red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: var(--yogibo-mid);
+  }
+
+  /* エラー */
+  .error-msg {
+    display: none;
+    background: #FFF5F5;
+    border: 1px solid #FCC;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #C00;
+    margin-top: 12px;
+  }
+
+  .error-msg.visible { display: block; }
+
+  /* 文字数 */
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    margin-top: 6px;
+    color: var(--yogibo-mid);
+  }
+
+  .char-count.over { color: var(--yogibo-red); font-weight: 700; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--yogibo-border);
+    margin: 28px 0;
+  }
+
+  .api-key-section {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .api-key-section label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #92400E;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .api-key-section input {
+    width: 100%;
+    border: 1.5px solid #FDE68A;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: monospace;
+    outline: none;
+    background: white;
+  }
+
+  .api-key-section input:focus {
+    border-color: #F59E0B;
+  }
+
+  .api-hint {
+    font-size: 11px;
+    color: #92400E;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Yogibo <span>SNS</span> Generator</div>
+  <div class="badge">β版</div>
+</header>
+
+<main>
+
+  <!-- APIキー -->
+  <div class="api-key-section">
+    <label>🔑 Anthropic APIキー</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-...">
+    <div class="api-hint">APIキーはブラウザ内のみで使用されます。外部に送信されません。</div>
+  </div>
+
+  <!-- STEP 1: カテゴリ -->
+  <div class="card">
+    <div class="step-label">Step 1</div>
+    <h2>投稿カテゴリを選んでください</h2>
+    <div class="category-grid">
+      <button class="cat-btn" data-cat="セール・送料無料" onclick="selectCat(this)">
+        <span class="emoji">🛍</span>セール・送料無料
+      </button>
+      <button class="cat-btn" data-cat="新商品" onclick="selectCat(this)">
+        <span class="emoji">🆕</span>新商品
+      </button>
+      <button class="cat-btn" data-cat="コラボ" onclick="selectCat(this)">
+        <span class="emoji">🤝</span>コラボ
+      </button>
+      <button class="cat-btn" data-cat="店舗" onclick="selectCat(this)">
+        <span class="emoji">🏪</span>店舗
+      </button>
+      <button class="cat-btn" data-cat="ギフト・季節" onclick="selectCat(this)">
+        <span class="emoji">🎁</span>ギフト・季節
+      </button>
+      <button class="cat-btn" data-cat="協賛" onclick="selectCat(this)">
+        <span class="emoji">🏟</span>協賛
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 記事 -->
+  <div class="card">
+    <div class="step-label">Step 2</div>
+    <h2>お知らせブログ記事を貼り付けてください</h2>
+    <textarea id="articleText" placeholder="タイトルと本文をそのまま貼り付けてください。
+
+例：
+Yogibo創業祭 -BIG THANKS SALE- 開催のお知らせ
+
+2025年7月17日(木)～8月17日(日)まで、全商品10%OFFに..."></textarea>
+    <div class="char-count" id="charCount">0文字</div>
+
+    <div class="url-input-wrap">
+      <span class="url-icon">🔗</span>
+      <input type="url" id="articleUrl" placeholder="記事のURL（例：https://yogibo.jp/blogs/life/20250710）">
+    </div>
+    <div class="input-hint">URLは投稿内の「▼詳しくはこちら」のリンクに使われます</div>
+  </div>
+
+  <!-- 生成ボタン -->
+  <button class="generate-btn" id="generateBtn" onclick="generate()" disabled="">
+    <span>✨</span>
+    <span>X・FB用の文章を生成する</span>
+  </button>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- ローディング -->
+  <div class="loading-wrap" id="loadingWrap">
+    <div class="spinner"></div>
+    <div class="loading-text">Yogiboトンマナで文章を生成中...</div>
+  </div>
+
+  <!-- 結果 -->
+  <div class="result-section" id="resultSection">
+    <hr class="divider">
+    <div class="step-label">生成結果</div>
+    <h2 style="margin-bottom:20px">コピーしてソーシャルインサイトに貼り付けてください</h2>
+
+    <!-- X -->
+    <div class="result-card">
+      <div class="result-header">
+        <div class="platform-label">
+          <div class="platform-dot dot-x"></div>
+          X（旧Twitter）
+        </div>
+        <button class="copy-btn" onclick="copyText(&#39;xResult&#39;, this)">📋 コピー</button>
+      </div>
+      <div class="result-body">
+        <div class="result-text" id="xResult"></div>
+        <div class="char-count" id="xCharCount"></div>
+      </div>
+    </div>
+
+    <!-- FB -->
+    <div class="result-card">
+      <div class="result-header">
+        <div class="platform-label">
+          <div class="platform-dot dot-fb"></div>
+          Facebook
+        </div>
+        <button class="copy-btn" onclick="copyText(&#39;fbResult&#39;, this)">📋 コピー</button>
+      </div>
+      <div class="result-body">
+        <div class="result-text" id="fbResult"></div>
+      </div>
+    </div>
+
+    <button class="generate-btn" style="background:#555;margin-top:8px" onclick="regenerate()">
+      <span>🔄</span><span>再生成する</span>
+    </button>
+  </div>
+
+</main>
+
+<script>
+let selectedCat = '';
+
+function selectCat(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedCat = btn.dataset.cat;
+  updateBtn();
+
+  // 結果が表示中なら自動再生成
+  if (document.getElementById('resultSection').classList.contains('visible')) {
+    document.getElementById('resultSection').classList.remove('visible');
+    const notice = document.createElement('div');
+    notice.id = 'regenNotice';
+    notice.style.cssText = 'text-align:center;padding:12px;font-size:13px;color:var(--yogibo-mid);';
+    notice.textContent = 'カテゴリが変更されました。再生成しています...';
+    const existing = document.getElementById('regenNotice');
+    if (existing) existing.remove();
+    document.getElementById('generateBtn').insertAdjacentElement('afterend', notice);
+    // ローディングテキストを必ずリセット
+    document.getElementById('loadingWrap').querySelector('.loading-text').textContent = 'Yogiboトンマナで文章を生成中...';
+    setTimeout(() => { notice.remove(); generate(); }, 800);
+  }
+}
+
+const textarea = document.getElementById('articleText');
+textarea.addEventListener('input', () => {
+  const len = textarea.value.length;
+  document.getElementById('charCount').textContent = len + '文字';
+  updateBtn();
+});
+
+function updateBtn() {
+  const hasText = textarea.value.trim().length > 0;
+  const hasCat = selectedCat !== '';
+  const hasKey = document.getElementById('apiKey').value.trim().length > 0;
+  document.getElementById('generateBtn').disabled = !(hasText && hasCat && hasKey);
+}
+
+document.getElementById('apiKey').addEventListener('input', updateBtn);
+
+function buildPrompt() {
+  const article = document.getElementById('articleText').value.trim();
+  const url = document.getElementById('articleUrl').value.trim();
+  const cat = selectedCat;
+
+  const examples = {
+    'セール・送料無料': {
+      x: `˗ˏˋ 創業祭スタートˊˎ˗\n年に一度の創業祭が、ただいまよりYogibo公式オンラインストアにて先行スタートします。\n日頃の感謝を込めて、この日のために特別なアイテムやスペシャル価格のラインナップをご用意しました🎁\n\n▼Yogibo創業祭-BIG THANKS SALE-\nhttps://yogibo.jp/pages/bigthankssale2025\n\n#Yogibo創業祭`,
+      fb: `【Yogibo創業祭 -BIG THANKS SALE- 開催】\n2025年7月17日(木)～8月17日(日)まで、全商品10%OFFに。\nさらに一部商品は最大30%OFFとなる特別セールです。\n.\nさらに、全国のYogibo Storeではスタンプラリー、Yogibo公式オンラインストアでは毎日変わる日替わりクーポンも実施。皆さまのご来店を心よりお待ちしております。\n.\n▼詳しくはこちら\nhttps://yogibo.jp/blogs/life/20250710`
+    },
+    '新商品': {
+      x: `|◤Plant Mate(プラント メイト)が新登場🌿◢||\nYogibo MateとSqueeziboに、植物をモチーフにした新しい仲間がそれぞれ3種類ずつ加わりました✨\nふわふわの手ざわりと、個性あふれるデザインで、インテリアにもぴったり。\n毎日に、やさしいグリーンをプラスしよう🌿\n\n▼Yogibo Mate一覧\nhttps://yogibo.jp/collections/mates`,
+      fb: `【Plant Mate(プラント メイト)が新登場】\nYogibo MateとSqueeziboに、植物をモチーフにした新しい仲間がそれぞれ3種類ずつ加わりました。\nふわふわの手ざわりと、個性あふれるデザインで、インテリアにもぴったり。\n毎日に、やさしいグリーンをプラスしよう。\n\n▼Yogibo Mate一覧\nhttps://yogibo.jp/collections/mates`
+    },
+    'コラボ': {
+      x: `⋱ ムーミンとの初コラボ ⋰\nYogibo特別モデルが登場🎉\n￣￣￣￣￣￣￣￣￣￣￣￣￣￣\n7/1(火)から「MOOMIN SHOP 楽天市場店」で数量限定で予約スタート🤍\nムーミンの優しさと、心地よいフィット感をお楽しみください。\n\n▼詳しくはこちら\nhttps://rakuten.ne.jp/gold/shop-moomin/cp/yogibo/`,
+      fb: `【ムーミンとの初のコラボレーション】\n特別デザインのYogiboが登場しました。\n2025年7月1日(火)より、『MOOMIN SHOP 楽天市場店』にて数量限定で予約を開始いたします。\nムーミンの優しさと、Yogiboならではの快適なフィット感を、ぜひこの機会にお試しください。\n*\n▼詳しくはこちら\nhttps://www.rakuten.ne.jp/gold/shop-moomin/cp/yogibo/`
+    },
+    '店舗': {
+      x: `／\nYogibo Store エミフルMASAKI 店\n4/10(金) NEW OPEN\n＼\n愛媛県伊予郡『エミフルMASAKI』に\nYogibo Store エミフルMASAKI がオープン✨\n人気のビーズソファをはじめ、アクセサリーも多数ご用意しています🧸\nぜひ店頭で #Yogibo の快適さをご体験ください🛋️\n\n▼詳細\nhttps://yogibo.jp/pages/store-location-detail\n\n#ヨギボー #エミフルMASAKI #愛媛`,
+      fb: `【OPENING SOON】\n愛媛県伊予郡のショッピングモール『エミフルMASAKI』にて、Yogibo StoreがNEW OPENいたします。\n.\n同店では、人気のビーズソファをはじめ、アクセサリー商品も豊富に取り揃えております。\nYogiboならではの快適な座り心地をぜひご体験くださいませ。\n.\nスタッフ一同ご来店をお待ちしております。`
+    },
+    'ギフト・季節': {
+      x: `◤父の日はYogiboを贈ろう🎁◢\n5/30(金)～6/15(日)の期間中、父の日に向けたギフトラッピングを無料でご提供✨\n\nいつも頑張るお父さんへ、Yogiboのくつろぎの時間を贈りませんか？\n\n▼父の日特設ページ\nhttps://yogibo.jp/pages/fathersday2025`,
+      fb: `【父の日はYogiboで癒しを贈ろう】\n2025年5月30日(金)～6月15日(日)の期間中、父の日に向けたギフトラッピングを《無料》でご提供いたします。\n.\nいつも頑張るお父さんへ、Yogiboのくつろぎの時間を贈りませんか？\nぜひYogiboを"ありがとう"の気持ちと一緒にお届けください。\n.\n▼父の日特設ページはこちら\nhttps://yogibo.jp/pages/fathersday2025`
+    },
+    '協賛': {
+      x: `【Yogibo協賛｜#ワンダリア横浜】\n\n3月19日開業の没入型体験施設「ワンダリア横浜」に協賛。\n\n施設内では、多くの来場者さまに"くつろぎ"をお届け。\nYogiboが空間に溶け込み、体験の質を高めます🛋️✨\n\n▼詳細\nhttps://yogibo.jp/blogs/life/20260311\n\n#ヨギボー #横浜`,
+      fb: `【Yogibo協賛情報】\n没入型体験施設「ワンダリア横浜」の開業に協賛いたしました。\n施設内では、多くの来場者さまにYogiboの"くつろぎ"をお届けしています。\n.\n▼詳しくはこちら\nhttps://yogibo.jp/blogs/life/20260311`
+    }
+  };
+
+  const ex = examples[cat] || examples['セール'];
+  const urlLine = url ? url : '（記事URLを入力してください）';
+
+  const decorationRules = {
+    'セール・送料無料': '記事の内容がセールなら④（˗ˏˋˊˎ˗ または ◤◢）またはパターン②（／＼）を使う。送料無料キャンペーンなら内容に合わせて自由に選ぶ（＼＼ ／／ なども可）',
+    'ギフト・季節': 'パターン④（◤◢ または ˗ˏˋˊˎ˗）を使う',
+    '新商品':   'パターン③（絵文字で挟む 例：🌿新商品名🌿）またはパターン④（◤◢ または ˗ˏˋˊˎ˗）を使う',
+    'コラボ':   'パターン①（⋱タイトル⋰＋区切り線 ￣￣￣ or ＿＿＿）またはパターン③（絵文字挟み）またはパターン④（˗ˏˋˊˎ˗ or ◤◢）を使う',
+    '店舗':     'パターン②（／＼）を必ず使う。例：／\nYogibo Store ○○店\n○/○(曜) NEW OPEN\n＼',
+    'シーズン': 'パターン④（◤◢ または ˗ˏˋˊˎ˗）を使う',
+    'フォロリポ': 'パターン②（／＼）を必ず使う。例：／\n#Yogibo × #コラボ相手\nフォロー＆リポストキャンペーン\n＼',
+    '協賛':     '冒頭は必ず【Yogibo協賛｜#イベント名】の形式で固定する（#イベント名は記事の内容から適切なものを入れる）。装飾文字は使わない。落ち着いた品のあるトーンで書く。',
+  };
+
+  return `あなたはYogibo（ヨギボー）公式SNS担当者です。
+以下のお知らせブログ記事をもとに、X（旧Twitter）とFacebook用の投稿文をそれぞれ1つずつ作成してください。
+
+【カテゴリ】${cat}
+
+【お知らせ記事】
+${article}
+
+【投稿に使うURL】
+${urlLine}
+
+---
+【Yogiboトンマナ・ルール】
+
+■ 共通ルール
+- Yogiboのブランドトーン：温かく、ポジティブ、くつろぎを大切にする
+- 商品名・ブランド名は正式表記を使う（Yogibo、ヨギボー）
+- 投稿の最後に必ず「▼〇〇」形式でURLを記載する
+- ビックリマーク（！）はFBでは絶対に使わない。Xでも原則使わない。どうしても雰囲気に必要な場合のみ、X投稿1つにつき最大1個まで使用可
+- 文末には句点（。）をつける（体言止めの場合は不要）
+
+■ X（旧Twitter）の書き方
+- 絵文字は必ず2〜3個使う（少なすぎず多すぎず、内容に合ったものを選ぶ）。ただし連続して並べた絵文字（例：🎁✨）は1カウントとして数える。つまり「🎁✨テキスト🌿」は絵文字2カウントとなりルールを満たす
+- 短文・体言止めを活用してテンポよく
+- 投稿の構成は必ず以下の順番にすること：
+  1. 装飾＋本文＋もう一押しの一文＋「▼詳しくはこちら」（ここまでを140文字以内に収めること・絶対に超えないこと）
+  2. URL
+  3. ハッシュタグ（#Yogibo必須・2〜5個）
+- ハッシュタグとURLは140文字のカウントに含めない
+- 文字数は装飾から「▼詳しくはこちら」までで必ず140文字以内。超える場合は本文を削って調整すること
+- 協賛カテゴリは：テンションを抑えた落ち着いた品のある文体にする
+- 投稿の最後（URLの直前）に、クリックを促す「もう一押し」の一文を必ず入れる。協賛カテゴリは不要。FBと同じ参考フレーズをXのトーンに合わせてアレンジして使う
+
+■ X装飾パターン（カテゴリごとに指定あり）
+パターン①：⋱タイトル⋰ で囲み、直後に ￣￣￣￣ または ＿＿＿＿ の区切り線を入れる
+  例）⋱ ムーミンとの初コラボ ⋰
+      Yogibo特別モデルが登場。
+      ￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+パターン②：／ と ＼ で囲む（店舗・フォロリポ用）
+  例）／
+      Yogibo Store ○○店
+      4/10(金) NEW OPEN
+      ＼
+パターン③：絵文字でタイトルを挟む
+  例）🌿Plant Mate 新登場🌿
+パターン④：˗ˏˋˊˎ˗ または ◤◢ で囲む
+  例）˗ˏˋ 創業祭スタート ˊˎ˗
+  例）◤父の日はYogiboを贈ろう◢
+
+【このカテゴリ（${cat}）の装飾ルール】
+${decorationRules[cat]}
+
+■ Facebook の書き方
+- 冒頭は【】を使った見出し形式（例：【○○のお知らせ】）
+- です・ます調の丁寧な文体
+- 情報を丁寧に、わかりやすく説明する（期間・対象・内容など）
+- Facebookは改行しても表示上1行になるため、段落間の空白行には必ず「.」を入れる。例）本文\n.\n次の段落
+- 「▼〇〇」のURL行の直前には必ず「.」を入れる。例）.\n▼詳しくはこちら\nhttps://...
+- 絵文字は絶対に使用しない
+- ハッシュタグは基本つけない
+- ビックリマーク（！）は絶対に使わない
+- 投稿の最後（URLの直前）に、クリックを促す「もう一押し」の一文を必ず入れる。内容・カテゴリに合わせて自然なものを選ぶ。協賛カテゴリは不要
+- 「もう一押し」の参考フレーズ（そのまま使わず、内容に合わせてアレンジする）：
+  「この機会にあなたのYogiboを"復活"させませんか？」
+  「ぜひ店頭で #Yogibo の快適さをご体験ください。」
+  「Yogiboならではのリラックスを、ぜひ体験してみてください。」
+  「この冬は新しいYogiboで、極上のリラックスタイムを。」
+  「あたたかなおこもり時間を彩るYogiboアイテムを、この機会にぜひチェックしてみてください。」
+
+■ カテゴリ別の注意点
+- セール・送料無料：セールは割引率や期間など具体的な数字を入れる。送料無料は対象商品・期間・ストアを明記する
+- 新商品：商品の特徴・魅力を伝える。FBは説明的に、Xは感覚的に
+- コラボ：希少性・特別感を出す。FBは経緯や詳細を丁寧に
+- 店舗：FBは住所・営業時間など詳細情報を記載
+- ギフト・季節：贈り物・ギフトの文脈を大切に。感情に訴えるコピー
+- 協賛：Yogiboの「くつろぎ」という価値を前面に出す。落ち着いた丁寧なトーンで
+
+---
+【参考投稿例（${cat}カテゴリ）】
+
+X例：
+${ex.x}
+
+FB例：
+${ex.fb}
+
+---
+【出力形式】
+必ず以下の形式で出力してください。余計な説明や前置きは不要です。
+
+=== X投稿 ===
+（X用の投稿文をここに）
+
+=== Facebook投稿 ===
+（Facebook用の投稿文をここに）`;
+}
+
+async function generate() {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) { showError('APIキーを入力してください。'); return; }
+  if (!selectedCat) { showError('カテゴリを選択してください。'); return; }
+  if (!document.getElementById('articleText').value.trim()) { showError('記事を入力してください。'); return; }
+
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('loadingWrap').classList.add('visible');
+  document.getElementById('loadingWrap').querySelector('.loading-text').textContent = 'Yogiboトンマナで文章を生成中...';
+  document.getElementById('resultSection').classList.remove('visible');
+  document.getElementById('errorMsg').classList.remove('visible');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: buildPrompt() }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || 'APIエラーが発生しました');
+    }
+
+    const data = await res.json();
+    const text = data.content[0].text;
+
+    const xMatch = text.match(/=== X投稿 ===([\s\S]*?)=== Facebook投稿 ===/);
+    const fbMatch = text.match(/=== Facebook投稿 ===([\s\S]*?)$/);
+
+    let xText = xMatch ? xMatch[1].trim() : text;
+    const fbText = fbMatch ? fbMatch[1].trim() : '';
+
+    // 140文字チェック → 超えていたら自動短縮再生成
+    const xMainText = xText.split('▼')[0].trimEnd();
+    if (xMainText.length > 140) {
+      document.getElementById('loadingWrap').querySelector('.loading-text').textContent = '140文字を超えているため短縮中...';
+      const shortenRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 500,
+          messages: [{ role: 'user', content: `以下のX（Twitter）投稿文を、「▼」より前の部分が必ず140文字以内になるように短縮してください。URLとハッシュタグ（▼より後ろ）はそのまま維持してください。Yogiboのトンマナ・装飾・絵文字・句点のルールは守ること。短縮した投稿文のみ出力してください。\n\n${xText}` }]
+        })
+      });
+      if (shortenRes.ok) {
+        const shortenData = await shortenRes.json();
+        xText = shortenData.content[0].text.trim();
+      }
+    }
+
+    document.getElementById('xResult').textContent = xText;
+    document.getElementById('fbResult').textContent = fbText;
+
+    const xFinalMain = xText.split('▼')[0].trimEnd();
+    const xMainLen = xFinalMain.length;
+    const xCountEl = document.getElementById('xCharCount');
+    if (xMainLen > 140) {
+      xCountEl.textContent = `本文：${xMainLen}文字 ⚠️ 140文字を超えています`;
+      xCountEl.className = 'char-count over';
+    } else {
+      xCountEl.textContent = `本文：${xMainLen}文字 ✅`;
+      xCountEl.className = 'char-count';
+    }
+
+    document.getElementById('resultSection').classList.add('visible');
+    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(e) {
+    showError(e.message);
+  } finally {
+    document.getElementById('loadingWrap').classList.remove('visible');
+    document.getElementById('generateBtn').disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('visible');
+}
+
+function copyText(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ コピーしました';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 コピー';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function regenerate() {
+  document.getElementById('resultSection').classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+
+</body></html>
