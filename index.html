@@ -733,7 +733,7 @@ async function generate() {
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-5',
         max_tokens: 1000,
         messages: [{ role: 'user', content: buildPrompt() }]
       })
@@ -766,7 +766,7 @@ async function generate() {
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-5',
           max_tokens: 500,
           messages: [{ role: 'user', content: `以下のX（Twitter）投稿文を、「▼」より前の部分が必ず140文字以内になるように短縮してください。URLとハッシュタグ（▼より後ろ）はそのまま維持してください。Yogiboのトンマナ・装飾・絵文字・句点のルールは守ること。短縮した投稿文のみ出力してください。\n\n${xText}` }]
         })
