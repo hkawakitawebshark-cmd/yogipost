@@ -744,8 +744,10 @@ async function generate() {
       throw new Error(err.error?.message || 'APIエラーが発生しました');
     }
 
-    const data = await res.json();
-    const text = data.content[0].text;
+    
+const data = await res.json();
+const textBlock = data.content.find(block => block.type === 'text');
+const text = textBlock ? textBlock.text : '';
 
     const xMatch = text.match(/=== X投稿 ===([\s\S]*?)=== Facebook投稿 ===/);
     const fbMatch = text.match(/=== Facebook投稿 ===([\s\S]*?)$/);
@@ -772,9 +774,10 @@ async function generate() {
         })
       });
       if (shortenRes.ok) {
-        const shortenData = await shortenRes.json();
-        xText = shortenData.content[0].text.trim();
-      }
+  const shortenData = await shortenRes.json();
+  const shortenTextBlock = shortenData.content.find(block => block.type === 'text');
+  xText = shortenTextBlock ? shortenTextBlock.text.trim() : xText;
+}
     }
 
     document.getElementById('xResult').textContent = xText;
